@@ -14,8 +14,7 @@ class UrlShortener:
     def shortify(self, origin: OriginUrl) -> ShortenHash:
         seq: bytes = self._get_seq()
 
-        encoded: bytes = base64.urlsafe_b64encode(seq)
-        _hash: str = self._remove_url_unsafe_padding(encoded)
+        _hash: str = self._hashing(seq)
         shorten_hash = ShortenHash(_hash=_hash)
 
         return shorten_hash, seq
@@ -24,6 +23,12 @@ class UrlShortener:
         next_seq = self._seq_generator.get_next()
 
         return str(next_seq).encode()
+
+    def _hashing(self, seq: bytes) -> bytes:
+        encoded: bytes = base64.urlsafe_b64encode(seq)
+        _hash: str = self._remove_url_unsafe_padding(encoded)
+
+        return _hash
 
     def _remove_url_unsafe_padding(self, url_unsafe: bytes) -> bytes:
         url_unsafe = url_unsafe.decode()
