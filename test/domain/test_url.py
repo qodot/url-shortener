@@ -1,9 +1,9 @@
-from src.domain.url import Url
+from src.domain.url import UrlShortener
 
 
-class TestUrlShortify():
+class TestUrlShortify:
     def test_shortify_short_length(self):
-        url = Url()
+        url = UrlShortener()
         seq = str(99999999)
 
         shortified = url.shortify(seq)
@@ -12,10 +12,10 @@ class TestUrlShortify():
         assert len(shortified) <= 11
 
     def test_shortify_unique(self):
-        url = Url()
+        url = UrlShortener()
 
         shortifieds = []
-        for seq in range(1000):
+        for seq in range(2222):
             seq = str(seq)
 
             shortified = url.shortify(seq)
