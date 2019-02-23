@@ -7,7 +7,6 @@ class TestUrlShortify:
         seq = str(99999999)
 
         shortified = url.shortify(seq)
-        print(shortified)
 
         assert len(shortified) <= 11
 
