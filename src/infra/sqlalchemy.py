@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
 
-uri = f'postgres://postgres:1234@localhost:5432/url-shortener'
+uri = f'postgresql://postgres:1234@localhost:5432/url-shortener'
 
 engine = create_engine(uri, echo=True)
 session_factory = sessionmaker(bind=engine)
