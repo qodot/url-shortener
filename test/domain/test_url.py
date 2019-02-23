@@ -1,23 +1,26 @@
-from src.domain.url import UrlShortener
+from typing import List
+
+from src.domain.url import UrlShortener, OriginUrl, ShortenHash
+from src.infra.seq import PGSeqGenerator
 
 
 class TestUrlShortify:
     def test_shortify_short_length(self):
-        url = UrlShortener()
-        seq = str(99999999)
+        url_shortener = UrlShortener(seq_generator=PGSeqGenerator())
+        origin_url = OriginUrl('www.google.com')
 
-        shortified = url.shortify(seq)
+        shorten_hash: ShortenHash = url_shortener.shortify(origin=origin_url)
 
-        assert len(shortified) <= 11
+        assert len(shorten_hash) <= 15
 
-    def test_shortify_unique(self):
-        url = UrlShortener()
+    # def test_shortify_unique(self):
+    #     url_shortener = UrlShortener(seq_generator=PGSeqGenerator())
 
-        shortifieds = []
-        for seq in range(2222):
-            seq = str(seq)
+    #     hashs: List[ShortenHash] = []
+    #     for seq in range(1000):
+    #         origin_url = OriginUrl('www.google.com')
 
-            shortified = url.shortify(seq)
-            assert shortified not in shortifieds
+    #         shorten_hash: ShortenHash = url_shortener.shortify(seq)
+    #         assert shorten_hash.hash not in hashs
 
-            shortifieds.append(shortified)
+    #         hashs.append(shorten_hash)
