@@ -26,7 +26,7 @@ fileConfig(config.config_file_name)
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 from src.infra.sqlalchemy import Base
-from src.infra.url import *
+from src.infra.url_repository import *
 
 target_metadata = Base.metadata
 

@@ -31,9 +31,9 @@ class Url(Base):
     __tablename__ = 'url'
 
     id = Column(Integer, primary_key=True)
-    seq = Column(String, index=True, unique=True, nullable=False)
-    origin = Column(String, nullable=False)
-    shorten = Column(String, nullable=False)
+    seq = Column(String, unique=True, nullable=False, index=True)
+    origin = Column(String, unique=True, nullable=False)
+    shorten = Column(String, unique=True, nullable=False, index=True)
     created_at = Column(DateTime, nullable=False, default=datetime.now)
     updated_at = Column(
             DateTime, nullable=False, default=datetime.now,
