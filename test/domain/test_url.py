@@ -5,7 +5,7 @@ from src.infra.seq_generator import PGSeqGenerator
 class TestUrlShortify:
     def test_shortify_short_length(self):
         url_shortener = UrlShortener(seq_generator=PGSeqGenerator())
-        origin_url = OriginUrl('www.google.com')
+        origin_url = OriginUrl('https://www.google.com')
 
         shorten_hash: ShortenHash = url_shortener.shortify(origin=origin_url)
 

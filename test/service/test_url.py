@@ -7,7 +7,7 @@ from src.infra.sqlalchemy import tx
 class TestUrlShortenerShortify:
     def test_shortify(self):
         service = UrlShortenerService(SAUrlRepository())
-        origin_url = OriginUrl('www.google.com')
+        origin_url = OriginUrl('https://www.google.com')
 
         shorten_hash: ShortenHash = service.shortify(origin_url)
 
@@ -20,7 +20,7 @@ class TestUrlShortenerShortify:
 
     def test_get_origin(self):
         service = UrlShortenerService(SAUrlRepository())
-        origin_url_in = OriginUrl('www.naver.com')
+        origin_url_in = OriginUrl('https://www.naver.com')
         shorten_hash: ShortenHash = service.shortify(origin_url_in)
 
         origin_url_out: OriginUrl = service.get_origin(shorten_hash)

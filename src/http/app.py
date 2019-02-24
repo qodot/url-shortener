@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, abort
+from flask import Flask, request, render_template, abort, redirect
 
 from src.service.url import UrlShortenerService
 from src.domain.url import OriginUrl, ShortenHash
@@ -19,7 +19,7 @@ def home():
     return render_template('home.html')
 
 
-@app.route('/generate', methods=['POST'])
+@app.route('/api/generate', methods=['POST'])
 def generate():
     origin_url = request.form.get('origin')
     if not origin_url:
@@ -29,5 +29,13 @@ def generate():
     shorten_hash: ShortenHash = service.shortify(OriginUrl(origin_url))
 
     return render_template(
-            'generated.html', host=request.url_root,
+            'generated.html', host=f'{request.url_root}',
             shorten=shorten_hash.hash)
+
+
+@app.route('/<string:hash_>')
+def go(hash_):
+    service = UrlShortenerService(SAUrlRepository())
+    origin: OriginUrl = service.get_origin(ShortenHash(hash_))
+
+    return redirect(origin.url)
