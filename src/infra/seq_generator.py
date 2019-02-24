@@ -1,7 +1,7 @@
 from sqlalchemy.schema import Sequence
 
-from src.domain.seq import SeqGenerator, UrlSeq
-from .sqlalchemy import tx
+from src.domain.seq_generator import SeqGenerator, UrlSeq
+from src.infra.sqlalchemy import tx
 
 
 class PGSeqGenerator(SeqGenerator):

@@ -1,7 +1,5 @@
-from typing import List
-
 from src.domain.url import UrlShortener, OriginUrl, ShortenHash
-from src.infra.seq import PGSeqGenerator
+from src.infra.seq_generator import PGSeqGenerator
 
 
 class TestUrlShortify:

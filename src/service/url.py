@@ -1,7 +1,6 @@
-from src.domain.url import UrlShortener, OriginUrl, ShortenHash
+from src.domain.url import UrlShortener, OriginUrl, ShortenHash, UrlSeq
 from src.domain.url_repository import UrlRepository
-from src.domain.seq import UrlSeq
-from src.infra.seq import PGSeqGenerator
+from src.infra.seq_generator import PGSeqGenerator
 
 
 class UrlShortenerService:

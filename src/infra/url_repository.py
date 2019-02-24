@@ -3,9 +3,9 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime
 
 from src.domain.url import OriginUrl, ShortenHash
-from src.domain.seq import UrlSeq
 from src.domain.url_repository import UrlRepository
-from .sqlalchemy import Base, tx
+from src.domain.seq_generator import UrlSeq
+from src.infra.sqlalchemy import Base, tx
 
 
 class SAUrlRepository(UrlRepository):

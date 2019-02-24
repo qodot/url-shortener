@@ -2,7 +2,7 @@ from __future__ import annotations
 import base62
 from dataclasses import dataclass
 
-from src.domain.seq import SeqGenerator, UrlSeq
+from src.domain.seq_generator import SeqGenerator, UrlSeq
 
 
 class UrlShortener:
