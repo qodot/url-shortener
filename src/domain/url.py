@@ -1,8 +1,8 @@
 from __future__ import annotations
-import base64
+import base62
 from dataclasses import dataclass
 
-from .seq import SeqGenerator
+from src.domain.seq import SeqGenerator, UrlSeq
 
 
 class UrlShortener:
@@ -12,28 +12,23 @@ class UrlShortener:
         self._seq_generator = seq_generator
 
     def shortify(self, origin: OriginUrl) -> ShortenHash:
-        seq: bytes = self._get_seq()
+        seq: UrlSeq = self._get_seq()
 
         _hash: str = self._hashing(seq)
         shorten_hash = ShortenHash(_hash=_hash)
 
         return shorten_hash, seq
 
-    def _get_seq(self) -> bytes:
-        next_seq = self._seq_generator.get_next()
+    def _get_seq(self) -> UrlSeq:
+        next_seq: UrlSeq = self._seq_generator.get_next()
 
-        return str(next_seq).encode()
+        return next_seq
 
-    def _hashing(self, seq: bytes) -> bytes:
-        encoded: bytes = base64.urlsafe_b64encode(seq)
-        _hash: str = self._remove_url_unsafe_padding(encoded)
+    def _hashing(self, seq: UrlSeq) -> str:
+        int_seq = int(seq.seq)
+        hash_: str = base62.encode(int_seq)
 
-        return _hash
-
-    def _remove_url_unsafe_padding(self, url_unsafe: bytes) -> bytes:
-        url_unsafe = url_unsafe.decode()
-
-        return url_unsafe.replace('=', '-')
+        return hash_
 
 
 @dataclass
@@ -41,7 +36,7 @@ class OriginUrl:
     _url: str
 
     @property
-    def url(self):
+    def url(self) -> str:
         return self._url
 
 
@@ -50,8 +45,8 @@ class ShortenHash:
     _hash: str
 
     @property
-    def hash(self):
+    def hash(self) -> str:
         return self._hash
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._hash)

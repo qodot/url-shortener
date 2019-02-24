@@ -3,17 +3,18 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime
 
 from src.domain.url import OriginUrl, ShortenHash
+from src.domain.seq import UrlSeq
 from src.domain.url_repository import UrlRepository
 from .sqlalchemy import Base, tx
 
 
 class SAUrlRepository(UrlRepository):
     def save(
-            self, origin: OriginUrl, shorten: ShortenHash, seq: bytes,
+            self, origin: OriginUrl, shorten: ShortenHash, seq: UrlSeq,
             ) -> None:
         new_url = Url(
                 origin=origin.url, shorten=shorten.hash,
-                seq=seq.decode())
+                seq=seq.seq)
 
         with tx() as session:
             session.add(new_url)

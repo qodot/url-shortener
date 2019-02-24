@@ -1,5 +1,6 @@
 from src.domain.url import UrlShortener, OriginUrl, ShortenHash
 from src.domain.url_repository import UrlRepository
+from src.domain.seq import UrlSeq
 from src.infra.seq import PGSeqGenerator
 
 
@@ -13,7 +14,7 @@ class UrlShortenerService:
         url_shortener = UrlShortener(seq_generator=PGSeqGenerator())
 
         shorten_hash: ShortenHash
-        seq: bytes
+        seq: UrlSeq
         shorten_hash, seq = url_shortener.shortify(origin=origin_url)
 
         self._save_url(origin_url, shorten_hash, seq)
@@ -21,6 +22,6 @@ class UrlShortenerService:
         return shorten_hash
 
     def _save_url(
-            self, origin: OriginUrl, shorten: ShortenHash, seq: bytes,
+            self, origin: OriginUrl, shorten: ShortenHash, seq: UrlSeq,
             ) -> None:
         self._url_repository.save(origin, shorten, seq)
