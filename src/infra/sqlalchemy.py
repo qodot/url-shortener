@@ -7,7 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 uri = f'postgresql://postgres:1234@localhost:5432/url-shortener'
 
 engine = create_engine(uri, echo=True)
-session_factory = sessionmaker(bind=engine)
+session_factory = sessionmaker(bind=engine, expire_on_commit=False)
 Session = scoped_session(session_factory)
 
 Base = declarative_base()

@@ -17,3 +17,12 @@ class TestUrlShortenerShortify:
             url = session.query(Url).filter(
                     Url.origin == origin_url.url).first()
             assert url is not None
+
+    def test_get_origin(self):
+        service = UrlShortenerService(SAUrlRepository())
+        origin_url_in = OriginUrl('www.naver.com')
+        shorten_hash: ShortenHash = service.shortify(origin_url_in)
+
+        origin_url_out: OriginUrl = service.get_origin(shorten_hash)
+
+        assert origin_url_in == origin_url_out

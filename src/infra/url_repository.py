@@ -19,6 +19,13 @@ class SAUrlRepository(UrlRepository):
         with tx() as session:
             session.add(new_url)
 
+    def get_origin_by_shorten(self, shorten: ShortenHash) -> OriginUrl:
+        with tx() as session:
+            result: Url = session.query(Url).filter(
+                    Url.shorten == shorten.hash).one()
+
+        return OriginUrl(result.origin)
+
 
 class Url(Base):
     __tablename__ = 'url'
