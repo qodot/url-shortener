@@ -14,3 +14,7 @@ class UrlRepository(ABC):
     @abstractmethod
     def get_origin_by_shorten(self, shorten: ShortenHash) -> OriginUrl:
         pass
+
+    @abstractmethod
+    def is_exist_origin(self, origin_url: OriginUrl) -> bool:
+        pass

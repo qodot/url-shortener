@@ -31,13 +31,23 @@ class SAUrlRepository(UrlRepository):
 
         return OriginUrl(result.origin)
 
+    def is_exist_origin(self, origin_url: OriginUrl) -> bool:
+        with tx() as session:
+            result = session.query(Url).filter(
+                    Url.origin == origin_url.url).first()
+
+        if result:
+            return True
+
+        return False
+
 
 class Url(Base):
     __tablename__ = 'url'
 
     id = Column(Integer, primary_key=True)
     seq = Column(String, unique=True, nullable=False, index=True)
-    origin = Column(String, unique=True, nullable=False)
+    origin = Column(String, unique=True, nullable=False, index=True)
     shorten = Column(String, unique=True, nullable=False, index=True)
     created_at = Column(DateTime, nullable=False, default=datetime.now)
     updated_at = Column(
