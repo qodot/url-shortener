@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, abort, redirect
 
 from src.service.url import UrlShortenerService
 from src.domain.url import OriginUrl, ShortenHash
+from src.domain.error import NotExistShortUrlError
 from src.infra.url_repository import SAUrlRepository
 
 
@@ -36,6 +37,10 @@ def generate():
 @app.route('/<string:hash_>')
 def go(hash_):
     service = UrlShortenerService(SAUrlRepository())
-    origin: OriginUrl = service.get_origin(ShortenHash(hash_))
+
+    try:
+        origin: OriginUrl = service.get_origin(ShortenHash(hash_))
+    except NotExistShortUrlError:
+        abort(404, 'short URL not exists')
 
     return redirect(origin.url)
