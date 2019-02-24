@@ -28,4 +28,6 @@ def generate():
     service = UrlShortenerService(SAUrlRepository())
     shorten_hash: ShortenHash = service.shortify(OriginUrl(origin_url))
 
-    return render_template('generated.html', shorten=shorten_hash.hash)
+    return render_template(
+            'generated.html', host=request.url_root,
+            shorten=shorten_hash.hash)
