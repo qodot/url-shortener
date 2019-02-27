@@ -35,6 +35,17 @@ class UrlShortenerService:
             ) -> None:
         self._url_repository.save(origin_url, shorten_hash, seq)
 
+    def get_shorten(self, origin_url: OriginUrl) -> ShortenHash:
+        shorten_hash: ShortenHash = self._get_shorten_by_origin(origin_url)
+
+        return shorten_hash
+
+    def _get_shorten_by_origin(self, origin_url: OriginUrl) -> ShortenHash:
+        shorten: ShortenHash = self._url_repository.get_shorten_by_origin(
+                origin_url)
+
+        return shorten
+
     def get_origin(self, shorten_hash: ShortenHash) -> OriginUrl:
         origin: OriginUrl = self._get_origin_by_shorten(shorten_hash)
 

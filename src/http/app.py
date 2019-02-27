@@ -22,20 +22,23 @@ def home():
 
 @app.route('/api/generate', methods=['POST'])
 def generate():
-    origin_url = request.form.get('origin')
-    if not origin_url:
+    origin = request.form.get('origin')
+    if not origin:
         abort(400, 'origin URL is required')
 
     service = UrlShortenerService(SAUrlRepository())
 
-    try:
-        shorten_hash: ShortenHash = service.shortify(OriginUrl(origin_url))
-    except AlreadyExistOriginUrl as e:
-        abort(400, e.message)
+    origin_url = OriginUrl(origin)
 
-    return render_template(
-            'generated.html', host=f'{request.url_root}',
-            shorten=shorten_hash.hash)
+    try:
+        shorten_hash: ShortenHash = service.shortify(origin_url)
+    except AlreadyExistOriginUrl:
+        shorten_hash: ShortenHash = service.get_shorten(origin_url)
+
+    url_root = request.url_root.replace('http://', 'https://')
+    shorten_url = f'{url_root}{shorten_hash.hash}'
+
+    return render_template('generated.html', shorten_url=shorten_url)
 
 
 @app.route('/<string:hash_>')

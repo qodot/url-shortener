@@ -12,6 +12,10 @@ class UrlRepository(ABC):
         pass
 
     @abstractmethod
+    def get_shorten_by_origin(self, origin: OriginUrl) -> ShortenHash:
+        pass
+
+    @abstractmethod
     def get_origin_by_shorten(self, shorten: ShortenHash) -> OriginUrl:
         pass
 

@@ -18,6 +18,15 @@ class TestUrlShortenerShortify:
                     Url.origin == origin_url.url).first()
             assert url is not None
 
+    def test_get_shorten(self):
+        service = UrlShortenerService(SAUrlRepository())
+        origin_url = OriginUrl('https://www.naver.com')
+        shorten_hash_before: ShortenHash = service.shortify(origin_url)
+
+        shorten_hash_after: ShortenHash = service.get_shorten(origin_url)
+
+        assert shorten_hash_before.hash == shorten_hash_after.hash
+
     def test_get_origin(self):
         service = UrlShortenerService(SAUrlRepository())
         origin_url_in = OriginUrl('https://www.naver.com')

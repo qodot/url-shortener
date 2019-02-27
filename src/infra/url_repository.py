@@ -21,6 +21,16 @@ class SAUrlRepository(UrlRepository):
         with tx() as session:
             session.add(new_url)
 
+    def get_shorten_by_origin(self, origin: OriginUrl) -> ShortenHash:
+        with tx() as session:
+            try:
+                result: Url = session.query(Url).filter(
+                        Url.origin == origin.url).one()
+            except NoResultFound:
+                raise NotExistShortUrlError
+
+        return ShortenHash(result.shorten)
+
     def get_origin_by_shorten(self, shorten: ShortenHash) -> OriginUrl:
         with tx() as session:
             try:
