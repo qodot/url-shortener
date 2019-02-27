@@ -1,8 +1,20 @@
 from __future__ import annotations
 import base62
 from dataclasses import dataclass
+from urllib.parse import urlparse
 
+from src.domain.error import InvalidUrl
 from src.domain.seq_generator import SeqGenerator, UrlSeq
+
+
+def url_validator(url: str) -> None:
+    try:
+        result = urlparse(url)
+    except Exception:
+        raise InvalidUrl
+
+    if not all([result.scheme, result.netloc]):
+        raise InvalidUrl
 
 
 class UrlShortener:
@@ -35,9 +47,20 @@ class UrlShortener:
 class OriginUrl:
     _url: str
 
+    def __init__(self, url: str) -> None:
+        self._set_url(url)
+
     @property
     def url(self) -> str:
         return self._url
+
+    def _set_url(self, url: str) -> None:
+        try:
+            url_validator(url)
+        except InvalidUrl:
+            raise
+        else:
+            self._url = url
 
 
 @dataclass

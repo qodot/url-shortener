@@ -8,3 +8,7 @@ class NotExistShortUrlError(Error):
 
 class AlreadyExistOriginUrl(Error):
     message = 'this origin url is already exists'
+
+
+class InvalidUrl(Error):
+    message = 'this url is invalid'
