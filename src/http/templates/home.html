@@ -1,14 +1,23 @@
 <!doctype html>
 <html>
 <head>
-  <title>Generate short URL</title>
+  <title>고도의 단축 URL 생성기</title>
 </head>
 <body>
-  <h1>Generate short URL</h1>
+  <h1>고도의 단축 URL 생성기</h1>
+
+  <p>안녕하세요, 생긴게 이래서 의심스러우시겠지만 나쁜 서비스가 아닙니다 :(</p>
+  <p>긴 URL을 줄여서 사용해보세요!</p>
 
   <form method="POST" action="/api/generate">
-    <input type="text" name="origin" placeholder="origin URL">
-    <input type="submit" value="submit">
+    <input type="text" name="origin" placeholder="원본 URL">
+    <input type="submit" value="생성!">
   </form>
+
+  <h3>고도의 프로필</h3>
+  <ul>
+    <li><a href="https://github.com/qodot">Github</a></li>
+    <li><a href="mailto:waitingforqodot@gmail.com">Email</a></li>
+  </ul>
 </body>
 </html>
