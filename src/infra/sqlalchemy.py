@@ -5,26 +5,32 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
 
-PG_URI = os.environ.get('URL_SHORTENER_PG_URI')
-uri = f'postgresql://postgres:1234@localhost:5432/url-shortener'
 
+PG_URI = os.environ.get('URL_SHORTENER_PG_URI')
 engine = create_engine(PG_URI, echo=True)
 session_factory = sessionmaker(bind=engine, expire_on_commit=False)
-Session = scoped_session(session_factory)
+scoped_session_factory = scoped_session(session_factory)
 
 Base = declarative_base()
 
 
-@contextmanager
-def tx():
-    session = Session()
+class Session:
+    @staticmethod
+    def get():
+        session = scoped_session_factory()
+        return session
 
-    try:
-        yield session
-    except Exception:
-        session.rollback()
-        raise
-    else:
-        session.commit()
-    finally:
-        session.close()
+    @staticmethod
+    @contextmanager
+    def begin():
+        session = scoped_session_factory()
+
+        try:
+            yield session
+        except Exception:
+            session.rollback()
+            raise
+        else:
+            session.commit()
+        finally:
+            session.remove()
