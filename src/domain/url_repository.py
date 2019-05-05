@@ -1,13 +1,11 @@
 from abc import ABC, abstractmethod
 
-from src.domain.url import OriginUrl
-from src.domain.url import ShortenHash
 from src.domain.url import Url
 
 
 class UrlRepository(ABC):
     @abstractmethod
-    def is_exist_origin(self, origin_url: str) -> bool:
+    def is_exist_origin(self, origin: str) -> bool:
         pass
 
     @abstractmethod
@@ -15,9 +13,9 @@ class UrlRepository(ABC):
         pass
 
     @abstractmethod
-    def get_shorten_by_origin(self, origin: OriginUrl) -> ShortenHash:
+    def find_by_origin(self, origin: str) -> Url:
         pass
 
     @abstractmethod
-    def get_origin_by_shorten(self, shorten: ShortenHash) -> OriginUrl:
+    def find_by_shorten(self, shorten: str) -> Url:
         pass

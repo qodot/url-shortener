@@ -6,8 +6,6 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm.exc import NoResultFound
 
 from src.domain.error import NotExistShortUrlError
-from src.domain.url import OriginUrl
-from src.domain.url import ShortenHash
 from src.domain.url import Url
 from src.domain.url_repository import UrlRepository
 from src.infra.sqlalchemy import Base
@@ -15,10 +13,10 @@ from src.infra.sqlalchemy import Session
 
 
 class SAUrlRepository(UrlRepository):
-    def is_exist_origin(self, origin_url: str) -> bool:
+    def is_exist_origin(self, origin: str) -> bool:
         with Session.begin() as session:
-            result = session.query(UrlDAO).filter(
-                UrlDAO.origin == origin_url,
+            result: UrlDAO = session.query(UrlDAO).filter(
+                UrlDAO.origin == origin,
             ).first()
 
         if result:
@@ -32,25 +30,27 @@ class SAUrlRepository(UrlRepository):
         with Session.begin() as session:
             session.add(new_url)
 
-    def get_shorten_by_origin(self, origin: OriginUrl) -> ShortenHash:
+    def find_by_origin(self, origin: str) -> Url:
         with Session.begin() as session:
             try:
-                result: Url = session.query(Url).filter(
-                        Url.origin == origin.url).one()
+                url: UrlDAO = session.query(UrlDAO).filter(
+                    UrlDAO.origin == origin,
+                ).one()
             except NoResultFound:
                 raise NotExistShortUrlError
 
-        return ShortenHash(result.shorten)
+        return url.to_domain()
 
-    def get_origin_by_shorten(self, shorten: ShortenHash) -> OriginUrl:
+    def find_by_shorten(self, shorten: str) -> Url:
         with Session.begin() as session:
             try:
-                result: Url = session.query(Url).filter(
-                        Url.shorten == shorten.hash).one()
+                url: UrlDAO = session.query(UrlDAO).filter(
+                    UrlDAO.shorten == shorten,
+                ).one()
             except NoResultFound:
                 raise NotExistShortUrlError
 
-        return OriginUrl(result.origin)
+        return url.to_domain()
 
 
 class UrlDAO(Base):
@@ -72,3 +72,6 @@ class UrlDAO(Base):
             origin=url.origin.url,
             shorten=url.shorten.hash,
         )
+
+    def to_domain(self) -> Url:
+        return Url(self.origin, self.seq, self.shorten)

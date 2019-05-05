@@ -39,20 +39,20 @@ class TestUrlService(TestDB):
         with pytest.raises(ValueError):
             service.shortify(origin_url)
 
-    # def test_get_shorten(self):
-    #     service = UrlShortenerService(SAUrlRepository())
-    #     origin_url = OriginUrl('https://www.naver.com')
-    #     shorten_hash_before: ShortenHash = service.shortify(origin_url)
+    def test_get_shorten_by_origin(self):
+        origin_url = 'https://www.naver.com'
+        service = UrlService(SAUrlRepository(), PGSeqGenerator())
+        shorten_hash_before: str = service.shortify(origin_url)
 
-    #     shorten_hash_after: ShortenHash = service.get_shorten(origin_url)
+        shorten_hash_after: str = service.get_shorten_by_origin(origin_url)
 
-    #     assert shorten_hash_before.hash == shorten_hash_after.hash
+        assert shorten_hash_before == shorten_hash_after
 
-    # def test_get_origin(self):
-    #     service = UrlShortenerService(SAUrlRepository())
-    #     origin_url_in = OriginUrl('https://www.naver.com')
-    #     shorten_hash: ShortenHash = service.shortify(origin_url_in)
+    def test_get_origin_by_shorten(self):
+        origin_url_in = 'https://www.naver.com'
+        service = UrlService(SAUrlRepository(), PGSeqGenerator())
+        shorten_hash: str = service.shortify(origin_url_in)
 
-    #     origin_url_out: OriginUrl = service.get_origin(shorten_hash)
+        origin_url_out: str = service.get_origin_by_shorten(shorten_hash)
 
-    #     assert origin_url_in == origin_url_out
+        assert origin_url_in == origin_url_out

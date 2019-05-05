@@ -16,44 +16,22 @@ class UrlService:
         self.url_repository = url_repository
         self.seq_generator = seq_generator
 
-    def shortify(self, origin_url: str) -> str:
-        if self._is_exist_origin(origin_url):
+    def shortify(self, origin: str) -> str:
+        if self.url_repository.is_exist_origin(origin):
             raise ValueError('duplicated origin url')
 
-        seq: int = self._get_next_seq()
-        url = Url(origin_url, seq)
-
-        self._save(url)
+        seq: int = self.seq_generator.get_next()
+        url = Url(origin, seq)
+        self.url_repository.save(url)
 
         return url.shorten.hash
 
-    def _is_exist_origin(self, origin_url: str) -> bool:
-        return self.url_repository.is_exist_origin(origin_url)
+    def get_shorten_by_origin(self, origin: str) -> str:
+        url: Url = self.url_repository.find_by_origin(origin)
 
-    def _get_next_seq(self) -> int:
-        return self.seq_generator.get_next()
+        return url.shorten.hash
 
-    def _save(self, url: Url) -> None:
-        self.url_repository.save(url)
+    def get_origin_by_shorten(self, shorten: str) -> str:
+        url: Url = self.url_repository.find_by_shorten(shorten)
 
-    # def get_shorten(self, origin_url: OriginUrl) -> ShortenHash:
-    #     shorten_hash: ShortenHash = self._get_shorten_by_origin(origin_url)
-
-    #     return shorten_hash
-
-    # def _get_shorten_by_origin(self, origin_url: OriginUrl) -> ShortenHash:
-    #     shorten: ShortenHash = self._url_repository.get_shorten_by_origin(
-    #             origin_url)
-
-    #     return shorten
-
-    # def get_origin(self, shorten_hash: ShortenHash) -> OriginUrl:
-    #     origin: OriginUrl = self._get_origin_by_shorten(shorten_hash)
-
-    #     return origin
-
-    # def _get_origin_by_shorten(self, shorten_hash: ShortenHash) -> OriginUrl:
-    #     origin: OriginUrl = self._url_repository.get_origin_by_shorten(
-    #             shorten_hash)
-
-    #     return origin
+        return url.origin.url

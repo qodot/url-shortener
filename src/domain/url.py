@@ -22,11 +22,14 @@ class Url:
     seq: UrlSeq
     shorten: ShortenHash
 
-    def __init__(self, origin: str, seq: int) -> None:
+    def __init__(self, origin: str, seq: int, shorten: str = None) -> None:
         self.origin = OriginUrl(origin)
         self.seq = UrlSeq(seq)
 
-        self.shorten = self._shortify()
+        if shorten is None:
+            self.shorten = self._shortify()
+        else:
+            self.shorten = ShortenHash(hash=shorten)
 
     def _shortify(self) -> ShortenHash:
         int_seq = int(self.seq.seq)
