@@ -1,37 +1,58 @@
-from src.service.url import UrlShortenerService
-from src.domain.url import OriginUrl, ShortenHash
-from src.infra.url_repository import SAUrlRepository, Url
-from src.infra.sqlalchemy import tx
+import pytest
+
+from src.service.url import UrlService
+from src.infra.seq_generator import PGSeqGenerator
+from src.infra.sqlalchemy import Session
+from src.infra.url_repository import SAUrlRepository
+from src.infra.url_repository import UrlDAO
+
+from test import TestDB
 
 
-class TestUrlShortenerShortify:
+class TestUrlService(TestDB):
     def test_shortify(self):
-        service = UrlShortenerService(SAUrlRepository())
-        origin_url = OriginUrl('https://www.google.com')
+        origin_url = 'https://www.google.com'
 
-        shorten_hash: ShortenHash = service.shortify(origin_url)
+        service = UrlService(SAUrlRepository(), PGSeqGenerator())
+        shorten_hash: str = service.shortify(origin_url)
 
-        assert len(shorten_hash) <= 15
+        assert len(shorten_hash) <= 10
 
-        with tx() as session:
-            url = session.query(Url).filter(
-                    Url.origin == origin_url.url).first()
+    def test_shortify_save(self):
+        origin_url = 'https://www.google.com'
+
+        service = UrlService(SAUrlRepository(), PGSeqGenerator())
+        service.shortify(origin_url)
+
+        with Session.begin() as session:
+            url = session.query(UrlDAO).filter(
+                UrlDAO.origin == origin_url,
+            ).first()
+
             assert url is not None
 
-    def test_get_shorten(self):
-        service = UrlShortenerService(SAUrlRepository())
-        origin_url = OriginUrl('https://www.naver.com')
-        shorten_hash_before: ShortenHash = service.shortify(origin_url)
+    def test_shortify_raise_duplicated(self):
+        origin_url = 'https://www.google.com'
+        service = UrlService(SAUrlRepository(), PGSeqGenerator())
+        service.shortify(origin_url)
 
-        shorten_hash_after: ShortenHash = service.get_shorten(origin_url)
+        with pytest.raises(ValueError):
+            service.shortify(origin_url)
 
-        assert shorten_hash_before.hash == shorten_hash_after.hash
+    # def test_get_shorten(self):
+    #     service = UrlShortenerService(SAUrlRepository())
+    #     origin_url = OriginUrl('https://www.naver.com')
+    #     shorten_hash_before: ShortenHash = service.shortify(origin_url)
 
-    def test_get_origin(self):
-        service = UrlShortenerService(SAUrlRepository())
-        origin_url_in = OriginUrl('https://www.naver.com')
-        shorten_hash: ShortenHash = service.shortify(origin_url_in)
+    #     shorten_hash_after: ShortenHash = service.get_shorten(origin_url)
 
-        origin_url_out: OriginUrl = service.get_origin(shorten_hash)
+    #     assert shorten_hash_before.hash == shorten_hash_after.hash
 
-        assert origin_url_in == origin_url_out
+    # def test_get_origin(self):
+    #     service = UrlShortenerService(SAUrlRepository())
+    #     origin_url_in = OriginUrl('https://www.naver.com')
+    #     shorten_hash: ShortenHash = service.shortify(origin_url_in)
+
+    #     origin_url_out: OriginUrl = service.get_origin(shorten_hash)
+
+    #     assert origin_url_in == origin_url_out

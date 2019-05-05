@@ -4,7 +4,9 @@ from src.domain.error import InvalidUrl
 from src.domain.url import Url
 from src.domain.url import url_validator
 from src.infra.seq_generator import PGSeqGenerator
+
 from test import pytest_not_raises
+from test import TestDB
 
 
 class TestUrlValidator:
@@ -27,7 +29,7 @@ class TestUrlValidator:
             url_validator(url)
 
 
-class TestUrl:
+class TestUrl(TestDB):
     def test_create_url(self):
         seq_generator = PGSeqGenerator()
         seq = seq_generator.get_next()
