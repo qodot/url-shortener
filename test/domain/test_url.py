@@ -1,7 +1,8 @@
 import pytest
 
 from src.domain.error import InvalidUrl
-from src.domain.url import url_validator, UrlShortener, OriginUrl, ShortenHash
+from src.domain.url import Url
+from src.domain.url import url_validator
 from src.infra.seq_generator import PGSeqGenerator
 from test import pytest_not_raises
 
@@ -26,23 +27,12 @@ class TestUrlValidator:
             url_validator(url)
 
 
-class TestUrlShortify:
-    def test_shortify_short_length(self):
-        url_shortener = UrlShortener(seq_generator=PGSeqGenerator())
-        origin_url = OriginUrl('https://www.google.com')
+class TestUrl:
+    def test_create_url(self):
+        seq_generator = PGSeqGenerator()
+        seq = seq_generator.get_next()
+        origin = 'https://www.google.com'
 
-        shorten_hash: ShortenHash = url_shortener.shortify(origin=origin_url)
+        url = Url(origin, seq)
 
-        assert len(shorten_hash) <= 15
-
-    # def test_shortify_unique(self):
-    #     url_shortener = UrlShortener(seq_generator=PGSeqGenerator())
-
-    #     hashs: List[ShortenHash] = []
-    #     for seq in range(1000):
-    #         origin_url = OriginUrl('www.google.com')
-
-    #         shorten_hash: ShortenHash = url_shortener.shortify(seq)
-    #         assert shorten_hash.hash not in hashs
-
-    #         hashs.append(shorten_hash)
+        assert len(url.shorten) <= 10

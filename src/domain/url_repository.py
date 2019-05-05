@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 
-from src.domain.url import OriginUrl, ShortenHash
-from src.domain.seq_generator import UrlSeq
+from src.domain.url import OriginUrl
+from src.domain.url import ShortenHash
+from src.domain.url import UrlSeq
 
 
 class UrlRepository(ABC):
