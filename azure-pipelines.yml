@@ -1,0 +1,56 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+resources:
+  containers:
+  - container: sqodotme
+    image: python:3.7
+  - container: postgres
+    image: postgres:9.4
+    env:
+      POSTGRES_DB: url_shortener
+
+container: sqodotme
+
+services:
+  postgres: postgres
+
+steps:
+- script: pip install --upgrade pip setuptools wheel
+  displayName: 'Upgrade pip/setuptools/wheel'
+
+- script: sudo pip install -r requirements.txt
+  displayName: 'Install packages in requirements.txt'
+
+- script: |
+    pip install flake8
+    flake8 . --exclude=migration
+  displayName: 'Run flake8'
+
+- script: |
+    pip install pytest
+    pip install pytest-cov
+    pytest test --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+  displayName: 'Run pytest with covarage'
+  env:
+    URL_SHORTENER_PG_URI: postgresql://postgres@postgres/url-shortener
+
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testResultsFiles: '**/test-*.xml'
+    testRunTitle: 'Publish test results for Python $(python.version)'
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
+    reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'
