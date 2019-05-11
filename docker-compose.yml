@@ -10,4 +10,14 @@ services:
       - 80:5000
     environment:
       - FLASK_APP=src/http/app.py
-      - URL_SHORTENER_PG_URI
+      - URL_SHORTENER_PG_URI=postgresql://postgres@postgres/url-shortener
+    links:
+      - db:postgres
+
+  db:
+    image: postgres:9.4
+    container_name: web-db
+    volumes:
+      - "./postgresql:/var/lib/postgresql/data"
+    environment:
+      POSTGRES_DB: url_shortener
