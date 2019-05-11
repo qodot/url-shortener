@@ -24,30 +24,30 @@ services:
 
 steps:
 - script: python -m venv venv
-  displayName: 'Create virtual environment'
+  displayName: '파이썬 가상환경 생성'
 
 - script: |
     source venv/bin/activate
     pip install --upgrade pip setuptools wheel
-  displayName: 'Upgrade pip/setuptools/wheel'
+  displayName: '파이썬 빌드 도구 업데이트'
 
 - script: |
     source venv/bin/activate
     pip install -r requirements.txt
-  displayName: 'Install packages in requirements.txt'
+  displayName: '애플리케이션의 파이썬 의존성 설치'
 
 - script: |
     source venv/bin/activate
     pip install flake8
     flake8 .
-  displayName: 'Run flake8'
+  displayName: 'Lint 실행'
 
 - script: |
     source venv/bin/activate
     pip install pytest
     pip install pytest-cov
     pytest test --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
-  displayName: 'Run pytest with covarage'
+  displayName: '테스트 실행'
   env:
     URL_SHORTENER_PG_URI: postgresql://postgres@postgres/url-shortener
 
@@ -63,8 +63,11 @@ steps:
     summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
     reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'
 
+- script: git archive --format=tar.gz HEAD -o ${Build.ArtifactStagingDirectory}/archive.tar.gz
+  displayName: '빌드 아티팩트를 위한 코드 아카이브'
+
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/archive.tar.gz'
     ArtifactName: 'drop'
     publishLocation: 'Container'
