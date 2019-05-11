@@ -1,4 +1,6 @@
+# python
 *.pyc
 __pycache__
 
+# db
 postgresql
