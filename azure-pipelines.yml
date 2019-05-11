@@ -1,4 +1,4 @@
-# Starter pipeline
+tarter pipeline
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
@@ -16,7 +16,7 @@ resources:
   - container: postgres
     image: postgres:9.4
     env:
-      POSTGRES_DB: url_shortener
+      POSTGRES_DB: url-shortener
 
 container: sqodotme
 
@@ -24,18 +24,27 @@ services:
   postgres: postgres
 
 steps:
-- script: pip install --upgrade pip setuptools wheel
+- script: python -m venv venv
+  displayName: 'Create virtual environment'
+
+- script: |
+    source venv/bin/activate
+    pip install --upgrade pip setuptools wheel
   displayName: 'Upgrade pip/setuptools/wheel'
 
-- script: sudo pip install -r requirements.txt
+- script: |
+    source venv/bin/activate
+    pip install -r requirements.txt
   displayName: 'Install packages in requirements.txt'
 
 - script: |
+    source venv/bin/activate
     pip install flake8
-    flake8 . --exclude=migration
+    flake8 .
   displayName: 'Run flake8'
 
 - script: |
+    source venv/bin/activate
     pip install pytest
     pip install pytest-cov
     pytest test --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
