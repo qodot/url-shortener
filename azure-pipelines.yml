@@ -63,7 +63,7 @@ steps:
     summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
     reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'
 
-- script: git archive --format=tar.gz HEAD -o '${Build.ArtifactStagingDirectory}/archive.tar.gz'
+- script: git archive --format=tar.gz HEAD -o ${BUILD_ARTIFACTSTAGINGDIRECTORY}/archive.tar.gz
   displayName: '빌드 아티팩트를 위한 코드 아카이브'
 
 - task: PublishBuildArtifacts@1
