@@ -6,6 +6,7 @@ from src.domain.error import (
 )
 from src.domain.url import OriginUrl, ShortenHash
 from src.infra.url_repository import SAUrlRepository
+from src.infra.seq_generator import PGSeqGenerator
 
 
 def create_app():
@@ -28,7 +29,7 @@ def generate():
     if not origin:
         abort(400, 'origin URL is required')
 
-    service = UrlService(SAUrlRepository())
+    service = UrlService(SAUrlRepository(), PGSeqGenerator())
 
     try:
         origin_url = OriginUrl(origin)
@@ -48,7 +49,7 @@ def generate():
 
 @app.route('/<string:hash_>')
 def go(hash_):
-    service = UrlService(SAUrlRepository())
+    service = UrlService(SAUrlRepository(), PGSeqGenerator())
 
     try:
         origin = service.get_origin(ShortenHash(hash_))
