@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from datetime import datetime
 
 from sqlalchemy import Column, Integer, String, DateTime
@@ -15,7 +13,7 @@ from src.infra.sqlalchemy import Session
 class SAUrlRepository(UrlRepository):
     def is_exist_origin(self, origin: str) -> bool:
         with Session.begin() as session:
-            result: UrlDAO = session.query(UrlDAO).filter(
+            result = session.query(UrlDAO).filter(
                 UrlDAO.origin == origin,
             ).first()
 
@@ -25,7 +23,7 @@ class SAUrlRepository(UrlRepository):
         return False
 
     def save(self, url: Url) -> None:
-        new_url: UrlDAO = UrlDAO.from_domain(url)
+        new_url = UrlDAO.from_domain(url)
 
         with Session.begin() as session:
             session.add(new_url)
@@ -33,7 +31,7 @@ class SAUrlRepository(UrlRepository):
     def find_by_origin(self, origin: str) -> Url:
         with Session.begin() as session:
             try:
-                url: UrlDAO = session.query(UrlDAO).filter(
+                url = session.query(UrlDAO).filter(
                     UrlDAO.origin == origin,
                 ).one()
             except NoResultFound:
@@ -44,7 +42,7 @@ class SAUrlRepository(UrlRepository):
     def find_by_shorten(self, shorten: str) -> Url:
         with Session.begin() as session:
             try:
-                url: UrlDAO = session.query(UrlDAO).filter(
+                url = session.query(UrlDAO).filter(
                     UrlDAO.shorten == shorten,
                 ).one()
             except NoResultFound:
@@ -62,11 +60,12 @@ class UrlDAO(Base):
     shorten = Column(String, unique=True, nullable=False, index=True)
     created_at = Column(DateTime, nullable=False, default=datetime.now)
     updated_at = Column(
-            DateTime, nullable=False, default=datetime.now,
-            onupdate=datetime.now)
+        DateTime, nullable=False,
+        default=datetime.now, onupdate=datetime.now,
+    )
 
     @classmethod
-    def from_domain(cls, url: Url) -> UrlDAO:
+    def from_domain(cls, url: Url) -> "UrlDAO":
         return cls(
             seq=url.seq.seq,
             origin=url.origin.url,

@@ -33,12 +33,12 @@ def generate():
     try:
         origin_url = OriginUrl(origin)
     except InvalidUrl as e:
-        abort(400, e.message)
+        abort(400, str(e))
 
     try:
-        shorten_hash: ShortenHash = service.shortify(origin_url)
+        shorten_hash = service.shortify(origin_url)
     except AlreadyExistOriginUrl:
-        shorten_hash: ShortenHash = service.get_shorten(origin_url)
+        shorten_hash = service.get_shorten(origin_url)
 
     url_root = request.url_root.replace('http://', 'https://')
     shorten_url = f'{url_root}{shorten_hash.hash}'
@@ -51,8 +51,8 @@ def go(hash_):
     service = UrlService(SAUrlRepository())
 
     try:
-        origin: OriginUrl = service.get_origin(ShortenHash(hash_))
+        origin = service.get_origin(ShortenHash(hash_))
     except NotExistShortUrlError as e:
-        abort(404, e.message)
+        abort(404, str(e))
 
     return redirect(origin.url)
