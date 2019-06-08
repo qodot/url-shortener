@@ -1,10 +1,16 @@
-from flask import Flask, request, render_template, abort, redirect
+from flask import (
+    Flask,
+    abort,
+    redirect,
+    render_template,
+    request,
+)
 
 from src.service.url import UrlService
 from src.domain.error import (
-    NotExistShortUrlError, AlreadyExistOriginUrl, InvalidUrl,
+    NotExistShortUrlError,
+    AlreadyExistOriginUrl,
 )
-from src.domain.url import OriginUrl, ShortenHash
 from src.infra.url_repository import SAUrlRepository
 from src.infra.seq_generator import PGSeqGenerator
 
@@ -32,17 +38,12 @@ def generate():
     service = UrlService(SAUrlRepository(), PGSeqGenerator())
 
     try:
-        origin_url = OriginUrl(origin)
-    except InvalidUrl as e:
-        abort(400, str(e))
-
-    try:
-        shorten_hash = service.shortify(origin_url)
+        shorten_hash = service.shortify(origin)
     except AlreadyExistOriginUrl:
-        shorten_hash = service.get_shorten(origin_url)
+        shorten_hash = service.get_shorten_by_origin(origin)
 
     url_root = request.url_root.replace('http://', 'https://')
-    shorten_url = f'{url_root}{shorten_hash.hash}'
+    shorten_url = f'{url_root}{shorten_hash}'
 
     return render_template('generated.html', shorten_url=shorten_url)
 
@@ -52,8 +53,8 @@ def go(hash_):
     service = UrlService(SAUrlRepository(), PGSeqGenerator())
 
     try:
-        origin = service.get_origin(ShortenHash(hash_))
+        origin = service.get_origin_by_shorten(hash_)
     except NotExistShortUrlError as e:
         abort(404, str(e))
 
-    return redirect(origin.url)
+    return redirect(origin)

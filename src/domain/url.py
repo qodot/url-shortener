@@ -40,9 +40,15 @@ class OriginUrl:
 class UrlSeq:
     seq = ""
 
+    def __init__(self, seq: str):
+        self.seq = seq
+
 
 class ShortenHash:
     hash = ""
+
+    def __init__(self, hash: str):
+        self.hash = hash
 
     def __len__(self) -> int:
         return len(self.hash)

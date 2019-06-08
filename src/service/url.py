@@ -1,3 +1,4 @@
+from src.domain.error import AlreadyExistOriginUrl
 from src.domain.seq_generator import SeqGenerator
 from src.domain.url import Url
 from src.domain.url_repository import UrlRepository
@@ -17,7 +18,7 @@ class UrlService:
 
     def shortify(self, origin: str) -> str:
         if self.url_repository.is_exist_origin(origin):
-            raise ValueError('duplicated origin url')
+            raise AlreadyExistOriginUrl
 
         seq = self.seq_generator.get_next()
         url = Url(origin, seq)
