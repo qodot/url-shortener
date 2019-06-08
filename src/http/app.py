@@ -5,6 +5,7 @@ from flask import (
     render_template,
     request,
 )
+import gevent.monkey
 
 from src.service.url import UrlService
 from src.domain.error import (
@@ -17,6 +18,8 @@ from src.infra.seq_generator import PGSeqGenerator
 
 def create_app():
     app = Flask(__name__)
+
+    gevent.monkey.patch_all()
 
     return app
 
