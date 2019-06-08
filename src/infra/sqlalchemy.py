@@ -33,4 +33,4 @@ class Session:
         else:
             session.commit()
         finally:
-            session.remove()
+            scoped_session_factory.remove()
