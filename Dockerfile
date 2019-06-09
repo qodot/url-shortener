@@ -4,6 +4,8 @@ ENV PYTHONUNBUFFERED=1
 
 RUN mkdir /app
 ADD . /app
-WORKDIR /app
 
+WORKDIR /tmp
 RUN pip install virtualenv && virtualenv venv
+
+WORKDIR /app

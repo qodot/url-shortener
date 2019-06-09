@@ -13,6 +13,7 @@ services:
     ports:
       - 5000:5000
     volumes:
+      - ./:/app
       - flask-python-site-packages:/app/venv/site-packages
       - flask-python-bin:/app/venv/bin
     environment:
