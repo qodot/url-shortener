@@ -1,0 +1,15 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+    commands:
+      - docker-compose up -d --build
+      - sleep 120
+  pre_build:
+    commands:
+      - docker exec sqodotme-flask /bin/bash -c "source /tmp/venv/bin/activate; pytest"
+  build:
+    commands:
+      - echo "BUILD"
