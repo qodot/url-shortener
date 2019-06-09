@@ -1,0 +1,32 @@
+version: '3'
+
+volumes:
+  flask-python-site-packages: {}
+  flask-python-bin: {}
+
+services:
+  flask:
+    container_name: sqodotme-flask
+    build:
+      context: .
+    command: /app/run.sh
+    ports:
+      - 5000:5000
+    volumes:
+      - flask-python-site-packages:/app/venv/site-packages
+      - flask-python-bin:/app/venv/bin
+    environment:
+      - FLASK_APP=src/http/app.py
+      - URL_SHORTENER_PG_URI=postgresql://postgres@postgres/sqodotme
+    links:
+      - postgres
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:10.6
+    container_name: sqodotme-postgres
+    volumes:
+      - "./postgresql:/var/lib/postgresql/data"
+    environment:
+      POSTGRES_DB: sqodotme
