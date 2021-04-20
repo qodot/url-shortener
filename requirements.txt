@@ -19,7 +19,7 @@ packaging==19.0
 pathlib2==2.3.3
 pluggy==0.12.0
 psycopg2cffi==2.8.1
-py==1.8.0
+py==1.10.0
 pybase62==0.4.0
 pycodestyle==2.5.0
 pyflakes==2.1.1
